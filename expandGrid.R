@@ -121,7 +121,7 @@ n[1]
 # rows in ans1, the single dataframe containing all the sim results
 
 # to understand the rep part:
-g # has 6 values corresponding to 2 levels A and B
+g[,1] 
 
 # say 
 n2 = c(2, 3, 1, 6, 4, 8)
