@@ -38,7 +38,7 @@ ans = lapply(seq_len(nrow(g)),
                            simplify = FALSE)
               })
 
-# ------------------------------------------------------------------------------
+# note start--------------------------------------------------------------------
 #  wouldn't g, mu and rate above be from the global environment? If we were to
 # avoid using global variables, would the following be a decent approach?
 ans = lapply(seq_len(nrow(g)),
@@ -73,7 +73,7 @@ str(replicate(NumReplicates, sim(mu[settings[1,1]], rate[settings[1,2]])))
 # (cond1 and cond2)
 # Each of the 6 components contain 10 replicates of the simulation.
 # The simulation results themselves are dataframes.
-# ------------------------------------------------------------------------------
+# note end----------------------------------------------------------------------
 
 
 # Now we convert the list of lists() of data frames to a single data frame
@@ -84,7 +84,7 @@ table(sapply(tmp, class))
 ans1 = do.call(rbind, tmp)
 
 
-# ------------------------------------------------------------------------------
+# note start--------------------------------------------------------------------
 # compare
 str(tmp)
 # with
@@ -96,7 +96,7 @@ str(unlist(ans))
 
 # We now have just a list of all the replicate dataframes, which are finally
 # collapsed together with do.call and rbind
-# ------------------------------------------------------------------------------
+# note end----------------------------------------------------------------------
 
 
 # Next we'll compute the appropriate values for cond1 and cond2 for each row
@@ -105,7 +105,7 @@ ans1$cond1 = rep(g[,1], n)
 ans1$cond2 = ordered(rep(g[,2], n), labels = rev(cond2))
 
 
-# ------------------------------------------------------------------------------
+# note start--------------------------------------------------------------------
 # n = sapply(ans, function(x) sum(sapply(x, nrow)))
 # eg. for the first cond1 cond2 combination
 x = ans[[1]]
@@ -136,7 +136,7 @@ g
 c2 = ordered(rep(g[,2], n2), labels = cond2)
 data.frame(c1,c2)
 
-# ------------------------------------------------------------------------------
+# note end----------------------------------------------------------------------
 
 
 # We also add the simulation/replicate number for each row within each of the 6 combinations of
