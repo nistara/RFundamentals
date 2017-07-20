@@ -14,7 +14,9 @@
 
 sim =
 function(a, b, n = rpois(1, a + b))
-  data.frame(x = rnorm(n, a), y = rexp(n, b))
+    data.frame(x = rnorm(n, a), y = rexp(n, min(.1, b)))
+
+# x = x, y = x*rep
 
 
 
@@ -26,8 +28,17 @@ rate = c(High = 40, Medium = 30, Low = 24)
 
 NumReplicates = 10
  # Generate the 6 possible combinations of settings
- # This is a data.frame of factors. We could use stringsAsFactors = FALSE
+# This is a data.frame of factors. We could use stringsAsFactors = FALSE
 g = expand.grid(cond1, cond2)
+
+# should be
+# g = expand.grid(names etc....coz if you change name elsewhere, you could
+# forget t change it here and then get an error
+
+g
+
+# note: see that there aren't any quotes around the strings, indicating that
+# they're factors!
 
 # Run the simulations for the 6 different levels.
 # We could use apply() since these are character vectors
@@ -38,16 +49,29 @@ ans = lapply(seq_len(nrow(g)),
                            simplify = FALSE)
               })
 
+# replicate uses sapply btw!
+
+class(ans)
+sapply(ans, class)
+sapply(ans, length)
+
+ans[[1]][[1]]
+
+sapply(ans[[1]], nrow)
+sapply(ans[[1]], class)
+
+
+
 # note start--------------------------------------------------------------------
 #  wouldn't g, mu and rate above be from the global environment? If we were to
 # avoid using global variables, would the following be a decent approach?
 ans = lapply(seq_len(nrow(g)),
-              function(i, g, mu, rate) {
+              function(i, g, NumReplicates, mu, rate) {
                  settings = g[i,]
                  replicate(NumReplicates,
                            sim(mu[settings[1,1]], rate[settings[1,2]]),
                            simplify = FALSE)
-              }, g, mu, rate)
+              }, g, NumReplicates, mu, rate)
 
 # breakdown of the above simulations for a single combination:
 settings = g[1,] # combination of 'A' and 'High'
@@ -82,7 +106,8 @@ length(tmp)
 table(sapply(tmp, class))
 
 ans1 = do.call(rbind, tmp)
-
+class(ans)
+dim(ans1)
 
 # note start--------------------------------------------------------------------
 # compare
@@ -104,6 +129,8 @@ n = sapply(ans, function(x) sum(sapply(x, nrow)))
 ans1$cond1 = rep(g[,1], n)
 ans1$cond2 = ordered(rep(g[,2], n), labels = rev(cond2))
 
+dim(ans1) # should be the same as sum(n)
+sum(n)
 
 # note start--------------------------------------------------------------------
 # n = sapply(ans, function(x) sum(sapply(x, nrow)))
@@ -129,6 +156,15 @@ n2 = c(2, 3, 1, 6, 4, 8)
 c1 = rep(g[,1], n2)
 # similarly
 c2 = ordered(rep(g[,2], n2), labels = rev(cond2))
+
+factor
+# see how labels = levels. If you don't provide the levels above, you've
+# made an error. so we made a labeling error. can specify both levels and labels
+# and get all sorts of errors. can misrepresent the values
+# labeling is a transformative action, after we've got the levels
+# some such stuff!!
+# Specify levels NOT labels
+
 data.frame(c1,c2)
 # which doesn't correspond to the combination sequence seen in g
 g
